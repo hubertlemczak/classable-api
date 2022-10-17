@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Team-Dev-Api-Spec
+  description: |-
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: users
+paths:
+  /login:
+    post:
+      tags:
+        - users
+      operationId: loginUser
+      requestBody:
+        description: User login information 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/LoginRes'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    post:
+      tags:
+        - users
+      summary: Register a user
+      description: Create new user
+      operationId: createUser
+      requestBody:
+        description: User registration details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRes'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: Get all users by courseId or by email
+      operationId: getAllUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: query
+          description: Search all users by email if provided
+          schema:
+            type: string
+        - name: courseId
+          in: query
+          description: Search all users in a course if provided
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRes'
+        '400':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT 
+  schemas:
+    Login:
+      type: object 
+      properties:
+        email:
+          type: string 
+        password:
+          type: string
+    LoginRes:
+      type: object 
+      properties:
+        data:
+         properties:
+          token:
+           type: string
+          user:
+           properties:
+              id: 
+               type: integer
+              cohort_id: 
+               type: integer 
+              role:
+               type: string
+              first_name:
+               type: string
+              last_name:
+                type: string
+              email:
+                type: string
+              biography:
+                type: string
+              github_url:
+                type: string
+    Register:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        biography:
+          type: string
+        github_url:
+          type: string
+    UserRes:
+          type: object 
+          properties: 
+            data:
+             properties:
+              user:
+               properties:
+                 id:
+                  type: integer
+                 cohort_id:
+                  type: integer
+                 role:
+                  type: string
+                 first_name:
+                  type: string
+                 last_name:
+                  type: string
+                 email:
+                  type: string
+                 biography:
+                  type: string
+                 github_url:
+                  type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
