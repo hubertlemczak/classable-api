@@ -1,18 +1,19 @@
 openapi: 3.0.3
 info:
   title: Classable API Spec
-  description: |-
+  description: ''
   version: 1.0.0
 
 servers:
-  - url: http://localhost:4000
+  - url: http://localhost:4040
 tags:
+  - name: auth
   - name: users
 paths:
   /login:
     post:
       tags:
-        - users
+        - auth
       operationId: loginUser
       requestBody:
         description: User login information 
@@ -26,20 +27,18 @@ paths:
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/LoginRes'
+               $ref: '#/components/schemas/AuthRes'
         400:
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /users:
+  /register:
     post:
       tags:
-        - users
-      summary: Register a user
-      description: Create new user
-      operationId: createUser
+        - auth
+      operationId: registerUser
       requestBody:
         description: User registration details
         content:
@@ -52,13 +51,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserRes'
+                $ref: '#/components/schemas/AuthRes'
         400:
           description: ''
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /users:
     get:
       tags:
         - users
@@ -79,20 +79,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserRes'
-        '400':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: successful operation
+        403:
+          description: Unauthorised
           content:
             application/json:
               schema:
@@ -112,69 +106,33 @@ components:
           type: string 
         password:
           type: string
-    LoginRes:
-      type: object 
-      properties:
-        data:
-         properties:
-          token:
-           type: string
-          user:
-           properties:
-              id: 
-               type: integer
-              cohort_id: 
-               type: integer 
-              role:
-               type: string
-              first_name:
-               type: string
-              last_name:
-                type: string
-              email:
-                type: string
-              biography:
-                type: string
-              github_url:
-                type: string
     Register:
       type: object
       properties:
-        first_name:
+        firstName:
           type: string
-        last_name:
+        lastName:
           type: string
         email:
           type: string
         password:
           type: string
-        biography:
+        confirmPassword:
           type: string
-        github_url:
-          type: string
+    AuthRes:
+      type: object 
+      properties:
+          token:
+           type: string
     UserRes:
           type: object 
-          properties: 
-            data:
-             properties:
+          properties:
               user:
-               properties:
-                 id:
-                  type: integer
-                 cohort_id:
-                  type: integer
-                 role:
-                  type: string
-                 first_name:
-                  type: string
-                 last_name:
-                  type: string
-                 email:
-                  type: string
-                 biography:
-                  type: string
-                 github_url:
-                  type: string
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: integer
     Error:
       type: object
       properties:
